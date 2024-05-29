@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+
+<head>
+</head>
+
+<body>
+	<div id="outer">
+		<div id="inner" style="position:relative; left:10px;">
+			<h2>- Raytrace Editor -</h2>
+			<div id="list" style="position:relative; left:4px; top:2px;">
+			</div>
+			<br>
+			<p> &nbsp &nbsp &nbspLight &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Cam Pos &nbsp&nbsp&nbsp&nbsp&nbsp Cam Ang</p>
+			<input type="text" id="lv" placeholder="Light Pos" size=3>
+			<input type="text" id="cp" placeholder="Cam Pos" size=3>
+			<input type="text" id="cv" placeholder="Cam Ang" size=3>
+			<select name="rm" id="rm">
+        <option value="primary">Primary</option>
+        <option value="msaa">MSAA</option>
+      </select>
+			<br><br>
+			<button id="createbutton" class="green" onClick="create()">ADD</button>
+			<button id="savebutton" class="green" onClick="runcast()">RUN</button>
+			<br>
+			<h3>-- SAVE STATES --</h3>
+			<button id="eg" class="green" onclick="saves()">SAVE</button>
+			<button id="sg" class="green" onclick="loads()">LOAD</button>
+			<br>
+			<button id="kl" class="green" onclick="keylist()">KEYS</button>
+			<button id="dl" class="green" onClick="datalist()">DATA</button>
+			<br>
+			<h3>-- DEBUG --</h3>
+			<button id="clearbutton" class="blue" onClick="google.script.run.clear()">CLEAR</button>
+			<button id="updatebutton" class="blue" onClick="google.script.run.edit()">REFRESH</button>
+			<br>
+			<button id="rs" class="blue" onClick="google.script.run.resize()">RESIZE</button>
+			<button id="tes" class="blue" onClick="testfun()">TESTER</button>
+			<br>
+			<button id="rs" class="blue" onClick="google.script.run.sslistint()">_INT_</button>
+			<br>
+			<p id="debug_1">0</p>
+			<p id="debug_2">1</p>
+		</div>
+	</div>
+	<script>
+		var count = 0;
+    create();
+
+    function create() {
+      count += 1;
+      var br;
+      var list = document.getElementById("list");
+      var div = document.createElement("div");
+      div.setAttribute("class", "object");
+      //div.setAttribute("style","outline: 2px solid black; width: 200px");
+      //div.appendChild(document.createTextNode("Object #" + count));
+
+      br = document.createElement("div");div.appendChild(br);//0
+      var x = document.createElement("INPUT");x.setAttribute("type", "text");x.setAttribute("id", "x"+count);x.setAttribute("placeholder", "X");x.setAttribute("size", "1");div.appendChild(x);//1
+      var y = document.createElement("INPUT");y.setAttribute("type", "text");y.setAttribute("id", "y"+count);y.setAttribute("placeholder", "Y");y.setAttribute("size", "1");div.appendChild(y);//2
+      var z = document.createElement("INPUT");z.setAttribute("type", "text");z.setAttribute("id", "z"+count);z.setAttribute("placeholder", "Z");z.setAttribute("size", "1");div.appendChild(z);//3
+    br = document.createElement("BR");div.appendChild(br);//4
+
+      var dx = document.createElement("INPUT");dx.setAttribute("type", "text");dx.setAttribute("id", "dx"+count);dx.setAttribute("placeholder", "DX");dx.setAttribute("size", "1");div.appendChild(dx);//5
+      var dy = document.createElement("INPUT");dy.setAttribute("type", "text");dy.setAttribute("id", "dy"+count);dy.setAttribute("placeholder", "DY");dy.setAttribute("size", "1");div.appendChild(dy);//6
+      var dz = document.createElement("INPUT");dz.setAttribute("type", "text");dz.setAttribute("id", "dz"+count);dz.setAttribute("placeholder", "DZ");dz.setAttribute("size", "1");div.appendChild(dz);//7
+      br = document.createElement("BR");div.appendChild(br);//8
+
+      var rndcol = '#'+Math.floor(Math.random()*16777214).toString(16);
+      var col = document.createElement("INPUT");col.setAttribute("type", "color");col.setAttribute("value", rndcol);col.setAttribute("id", "color"+count);div.appendChild(col);//9
+      br = document.createElement("BR");div.appendChild(br);//10
+
+      //var type = document.createElement("INPUT");type.setAttribute("type", "text");type.setAttribute("placeholder", "TYPE");type.setAttribute("id", "type"+count);type.setAttribute("size", "5");div.appendChild(type);
+      var types = ["box","sphere","pyramid","d8","formula","quadec","cylinder"];
+      var sel = document.createElement("select");sel.name = "Type";sel.id = "type"+count;
+      for(var i = 0; i < types.length; i++) {
+        var val = types[i];
+        var opt = document.createElement("option");opt.value = val;opt.text = val.charAt(0).toUpperCase() + val.slice(1);
+        sel.appendChild(opt);
+      }
+      div.appendChild(sel);//11
+      var d1 = document.createElement("INPUT");d1.setAttribute("type", "text");d1.setAttribute("id", "d1"+count);d1.setAttribute("placeholder", "DATA");d1.setAttribute("size", "1");div.appendChild(d1);//12
+      br = document.createElement("BR");div.appendChild(br);//13
+
+      var mats = ["diffuse","mirror","hole","glossy"];
+      var emats = ["emission","glass"];
+      var sel = document.createElement("select");sel.name = "Material";sel.id = "mat";
+      var grou = document.createElement("optgroup");grou.label = "Working";
+      var egrou = document.createElement("optgroup");egrou.label = "Experimental";
+      for(var i = 0; i < mats.length; i++) {
+        var val = mats[i];
+        var opt = document.createElement("option");opt.value = val;opt.text = val.charAt(0).toUpperCase() + val.slice(1);
+        grou.appendChild(opt);
+      }
+      for(var i = 0; i < emats.length; i++) {
+        var val = emats[i];
+        var opt = document.createElement("option");opt.value = val;opt.text = val.charAt(0).toUpperCase() + val.slice(1);
+        egrou.appendChild(opt);
+      }
+      sel.appendChild(grou);
+      sel.appendChild(egrou);
+      div.appendChild(sel); //14
+      var d2 = document.createElement("INPUT");d2.setAttribute("type", "text");d2.setAttribute("id", "d1"+count);d2.setAttribute("placeholder", "DATA");d2.setAttribute("size", "1");div.appendChild(d2);//15
+      br = document.createElement("BR");div.appendChild(br);//16
+
+      var rem = document.createElement("button");rem.setAttribute("onClick", "remove(this)");rem.innerHTML = "Remove";div.appendChild(rem);//17
+      br = document.createElement("BR");div.appendChild(br);//18
+      br = document.createElement("BR");div.appendChild(br);//19
+      list.appendChild(div);
+    }
+
+    function compile() {
+      var objects = new Array(count + 3);
+      var objs = document.getElementsByClassName("object");
+      for(var i = 0; i < count; i++) {
+        var obj = objs[i];
+        var childs = obj.children;
+        objects[i] = new Array(30);
+        objects[i][0] = childs[1].value+"";
+        objects[i][1] = childs[2].value+"";
+        objects[i][2] = childs[3].value+"";
+        objects[i][3] = childs[5].value+"";
+        objects[i][4] = childs[6].value+"";
+        objects[i][5] = childs[7].value+"";
+        objects[i][6] = childs[9].value+"";
+        objects[i][7] = childs[11].value+"";
+        objects[i][8] = childs[12].value+"";
+        objects[i][9] = childs[14].value+"";
+        objects[i][10] = childs[15].value+"";
+      }
+      objects[count] = new Array(3);
+      objects[count][0] = document.getElementById("lv").value;
+      objects[count][1] = document.getElementById("cp").value;
+      objects[count][2] = document.getElementById("cv").value;
+      objects[count+1] = document.getElementById("rm").value;
+      return objects;
+    }
+
+    function runcast() {
+      if (document.getElementById("rm").value == "primary" || document.getElementById("rm").value == "msaa") {
+        google.script.run.runnorm(compile(),count);
+      } else {
+        google.script.run.withSuccessHandler(makethreads).runnorm(compile(),count);
+      }
+    }
+
+    function makethreads() {
+      for (var i = 0; i < 49; i++) {
+        google.script.run.newthread(i);
+      }
+    }
+
+    function saves() {
+      google.script.run.saveobjectssb(compile(),count);
+    }
+
+    function loads() {
+      google.script.run.withSuccessHandler(loadobjs).psget();
+    }
+
+    function loadobjs(data) {
+      var sdata = data.split("&");
+      var vecdata = sdata[sdata.length-1];
+      sdata.splice(sdata.length-1,1);
+      sdata.splice(0,1);
+      vecdata = vecdata.split(":");
+      //document.getElementById("debug_1").innerHTML = sdata.toString();
+      //document.getElementById("debug_2").innerHTML = lights;
+
+      count = 0;
+      document.getElementById("list").innerHTML = "";
+      for (var a = 0; a < sdata.length; a++) {
+        create();
+      }
+
+      var parent = document.getElementsByClassName("object");
+      for (var o = 0; o < sdata.length; o++) {
+        var childs = parent[o].children;
+        var dat = sdata[o].split("|");
+        try {
+          childs[1].value = dat[0];
+          childs[2].value = dat[1];
+          childs[3].value = dat[2];
+          childs[5].value = dat[3];
+          childs[6].value = dat[4];
+          childs[7].value = dat[5];
+          childs[9].value = dat[6];
+          childs[11].value = dat[7];
+          childs[12].value = dat[8];
+          childs[14].value = dat[9];
+          childs[15].value = dat[10];
+        } catch (e) {}
+      }
+      document.getElementById("lv").value = vecdata[0];
+      document.getElementById("cp").value = vecdata[1];
+      document.getElementById("cv").value = vecdata[2];
+    }
+
+    function rem() {
+      var obj = document.getElementById("object"+count);
+      obj.remove();
+      count -= 1;
+    }
+
+    function remove(button) {
+      var div = button.parentElement;
+      div.remove();
+      count -= 1;
+    }
+    function testfun() {
+      for(var c = 0; c < 41; c++) {
+        google.script.run.addg(c);
+      }
+    }
+    function datalist() {}
+
+  function keylist() {
+    google.script.run.sslist()
+  }
+	</script>
+</body>
+
+</html>
